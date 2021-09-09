@@ -1,38 +1,91 @@
-.App {
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap');
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
+}
+
+.container {
+  text-align: center;
+  background-color: #F7F7F7;
+  justify-content: center;
+}
+
+.title{
+  color: #c0cdee;
+  padding: 20px;
+}
+.todos {
+  text-align: center;
+  justify-content: center;
+}
+
+.listItemClass {
+  color: #858585;
+  font-size: 21px;
+  padding: 0;
+  border: 2px solid #cecece;
+}
+
+.listItemClass input {
+  height: auto;
+  border: none;
+  color: #858585;
+  background-color: #F7F7F7;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.listItemClass input::placeholder{
+  color: #a7a7a7;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.listItemClass input:focus{
+  outline: none;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.listItemClass button {
+  color: #c0cdee;
+  background-color: #f5f5f5;
+  border: none;
+  visibility: hidden;
 }
 
-.App-link {
-  color: #61dafb;
+.listItemClass button:hover{
+  color: #858585;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.listItemClass button:focus{
+  outline: none;
+}
+
+li:hover > button {
+  color: #c0cdee;
+  border: none;
+  visibility: visible;
+}
+
+.listItemClass>li {
+  list-style: none;
+  text-indent: 20px;
+  height: auto;
+  padding: 10px;
+}
+.listItemClass:first-of-type li {
+  border-top: 2px dotted #cecece;
+}
+
+.listItemClass:last-child {
+  border-bottom: 2px dotted #cecece;
+}
+
+.listItemClass li:hover {
+  background-color: #f5f5f5;
+}
+
+.footer {
+  text-align: start;
+  color: #858585;
+  padding-left: 10px;
+  padding-bottom: 5px;
 }
