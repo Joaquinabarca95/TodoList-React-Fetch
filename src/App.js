@@ -10,7 +10,7 @@ function App() {
     getTodos();
   }, [])
 
-  const [url, setUrl] = useState("https://assets.breatheco.de/apis/fake/todos/user/joaquinabarcai")
+  const [url, setUrl] = useState("https://assets.breatheco.de/apis/fake/todos/user/joaquinabarca")
 
   const getTodos = () => {
 
@@ -20,8 +20,8 @@ function App() {
         "Content-Type": "application/json"
       }
     })
-      .then(resp => {
-        
+      .then(resp => {  
+        console.log(resp);
         if (resp.status === 404){
           createTodos();
         }
@@ -50,6 +50,9 @@ function App() {
       })
       .then((data) => {
         console.log(data);
+        if (data.result){
+          getTodos();
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -89,7 +92,7 @@ function App() {
       response.json()
     })
     .then((data) => {
-      getTodos();
+      getTodos()
       console.log(data);
     })
     .catch((error) => console.log(error))
@@ -97,7 +100,7 @@ function App() {
 
 
 
-  const todoList = todo.map((todo, index) => {
+  const todoList = todo.length > 0 ? todo.map((todo, index) => {
     return (
       <li key={index}>
         {todo.label}
@@ -106,12 +109,13 @@ function App() {
         </button>
       </li>
     )
-  })
+  }): (<li>lista vacia</li>)
 
 
   const handlePost = e => {
     if (e.keyCode === 13 && e.target.value !== "") {
       let task = [...todo].concat({ label: e.target.value, done: false })
+      setTodo(task)
       updateTodos(task);
       e.target.value = "";
     }
@@ -120,7 +124,7 @@ function App() {
   const removeTodo = (i) => {
     let newTodo = [...todo]
     newTodo.splice(i, 1)
-    setTodo(newTodo)
+    updateTodos(newTodo)
   }
 
   const itemsLeft = () => {
