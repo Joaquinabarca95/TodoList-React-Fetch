@@ -4,63 +4,104 @@ import './App.css';
 
 function App() {
 
+  const [todo, setTodo] = useState([])
+
   useEffect(() => {
     getTodos();
   }, [])
 
+  const [url, setUrl] = useState("https://assets.breatheco.de/apis/fake/todos/user/joaquinabarcai")
+
   const getTodos = () => {
 
-    fetch('https://assets.breatheco.de/apis/fake/todos/', {
-        method: "GET",    
-        headers: {
-          "Content-Type": "application/json"
-        }
-      })
+    fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
       .then(resp => {
-          console.log(resp.ok); // Será true (verdad) si la respuesta es exitosa.
-          console.log(resp.status); // el código de estado = 200 o código = 400 etc.
-          console.log(resp.text()); // Intentará devolver el resultado exacto como cadena (string)
-          return resp.json() // (regresa una promesa) will try to parse the result as json as return a promise that you can .then for results
+        
+        if (resp.status === 404){
+          createTodos();
+        }
+        return resp.json() // (regresa una promesa) will try to parse the result as json as return a promise that you can .then for results
       })
       .then(data => {
-          //Aquí es donde debe comenzar tu código después de que finalice la búsqueda     
-          setTodo(data)
-          console.log(data); //esto imprimirá en la consola el objeto exacto recibido del servidor
+        //Aquí es donde debe comenzar tu código después de que finalice la búsqueda 
+        setTodo(data)
       })
       .catch(error => {
-          //manejo de errores
-          console.log(error);
+        //manejo de errores
+        console.log(error);
       });
   }
 
-  // const createTodos = () => {
-  //   fetch('https://assets.breatheco.de/apis/fake/todos/user/joaquinabarca', {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json"
-  //     },
-  //     body: []
-  //   })
-  //   .then(resp => {
-  //     console.log(resp.ok);
-  //     console.log(resp.status);
-  //     return resp.json()
-  //   })
-  //   .then(data => {
-  //     console.log(data);
-  //   })
-  //   .catch((error) => console.log(error))
-  // }
+  const createTodos = () => {
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify([])
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+  }
+
+  const updateTodos = (todo) => {
+    fetch(url, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(todo)
+    }).then(resp => {
+      console.log("updateTodos " + resp.ok); // will be true if the response is successfull
+      console.log("updateTodos " + resp.status); // the status code = 200 or code = 400 etc.
+      return resp.json(); // (returns promise) will try to parse the result as json as return a promise that you can .then for results
+    })
+      .then(data => {
+        //here is were your code should start after the fetch finishes        
+          getTodos();       
+        console.log(data); //this will print on the console the exact object received from the server
+      })
+      .catch(error => {
+        //error handling
+        console.log(error);
+      });
+  }
+
+
+  const deleteTodos = () => {
+    fetch(url, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json"
+      } 
+    })
+    .then((response) => {
+      response.json()
+    })
+    .then((data) => {
+      getTodos();
+      console.log(data);
+    })
+    .catch((error) => console.log(error))
+  }
 
 
 
-  const [todo, setTodo] = useState([])
-
-  const todoList = todo.map((todo, index) =>{
+  const todoList = todo.map((todo, index) => {
     return (
       <li key={index}>
-        {todo} 
-        <button  onClick={() => removeTodo(index)}>
+        {todo.label}
+        <button onClick={() => removeTodo(index)}>
           <i className="fas fa-trash-alt"></i>
         </button>
       </li>
@@ -69,9 +110,9 @@ function App() {
 
 
   const handlePost = e => {
-    if (e.keyCode === 13 && e.target.value !== ""){
-      let task = todo.concat(e.target.value)
-      setTodo(task)
+    if (e.keyCode === 13 && e.target.value !== "") {
+      let task = [...todo].concat({ label: e.target.value, done: false })
+      updateTodos(task);
       e.target.value = "";
     }
   }
@@ -83,30 +124,31 @@ function App() {
   }
 
   const itemsLeft = () => {
-    if (todo.length === 0){
+    if (todo.length === 0) {
       return "No task left to do, add a task!"
-    } else if (todo.length === 1){
+    } else if (todo.length === 1) {
       return "1 task left to do"
-    } else if (todo.length > 1){
+    } else if (todo.length > 1) {
       return `${todo.length} tasks to do`
     }
   }
 
- 
+
 
   return (
-    
-      <div className="container">
-        <h1 className="title">todos</h1>  
-          <ul className="listItemClass">
-            <input type="text" onKeyUp={handlePost} placeholder="What needs to be done?"  />
-           {todoList}
-          </ul>
-          <div className="footer">
-            <small>{itemsLeft()}</small>
-          </div>   
+
+    <div className="container">
+      <h1 className="title">todos</h1>
+      <ul className="listItemClass">
+        <input type="text" onKeyUp={handlePost} placeholder="What needs to be done?" />
+        {todoList}
+      </ul>
+      <div className="footer">
+        <small>{itemsLeft()}</small>
+        <button className="btn btn-outline-danger btn-sm float-end" onClick={() => deleteTodos()}>Delete user and todos</button>
       </div>
-    
+    </div>
+
   );
 }
 
